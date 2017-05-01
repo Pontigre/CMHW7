@@ -10,13 +10,13 @@
 
 int main()
 {
-	const int N = 5; //Number of particles (min of 2)
-	double epsilon = 0.01;
+	const int N = 11; //Number of particles (min of 2)
+	double epsilon = 0.1;
 	double delta_t = 2 * M_PI / N;
-	const int steps = 5 ;
+	const int steps = 100 ;
 	double Result[steps][2 * N]; // omega_1,theta_1, ..., omega_N, theta_N
 
-	for (int i = 0; i <= steps; i++)
+	for (int i = 0; i < steps; i++)
 	{
 		for (int j = 0; j < 2*N; j++)
 		{
@@ -33,18 +33,18 @@ int main()
 		Result[0][2*i+1] = theta;
 	}
 
-	//Evolution
-	for (int n = 1; n <= steps; n++) {
+	//EVOLUTION
+	for (int n = 1; n < steps; n++) {
 		for (int i = 0; i < N; i++) {
-			Result[n][2 * i] = delta_t * epsilon * cos(Result[n - 1][2 * i]) * cos(delta_t*n) + Result[n - 1][2 * i];
-			Result[n][2 * i + 1] = delta_t*Result[n][2 * i] + Result[n - 1][2 * i + 1];
+			Result[n][2 * i + 1] = delta_t*Result[n-1][2 * i] + Result[n - 1][2 * i + 1] - 2* M_PI * floor((delta_t*Result[n - 1][2 * i] + Result[n - 1][2 * i + 1]) / (2 * M_PI));
+			Result[n][2 * i] = delta_t * epsilon * (sin(Result[n][2 * i + 1]-n*delta_t) + sin(Result[n][2 * i + 1] + n*delta_t)) + Result[n - 1][2 * i];
 		}
 	}
 
 	std::ofstream myfile;
 	myfile.open("CMHW7.txt");
 
-	for (int i = 0; i <= steps; i++)
+	for (int i = 0; i < steps; i++)
 	{
 		for (int j = 0; j < 2*N; j++)
 		{
